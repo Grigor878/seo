@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 const Home = () => {
   return (
     <section>
-      {/* <Helmet>
+      <Helmet>
         <title>Home Page Title</title>
         <meta
           name="description"
@@ -14,7 +14,7 @@ const Home = () => {
           property="og:image"
           content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9SRRmhH4X5N2e4QalcoxVbzYsD44C-sQv-w&s"
         />
-      </Helmet> */}
+      </Helmet>
       <h1>Home</h1>
       <p>
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Obcaecati eius

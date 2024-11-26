@@ -11,7 +11,7 @@ import App from "./components/App";
 
 hydrateRoot(
   document.getElementById("root"),
-    <Router>
-      <App />
-    </Router>
+  <Router>
+    <App />
+  </Router>
 );
