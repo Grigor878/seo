@@ -3,17 +3,6 @@ import React from "react";
 const About = () => {
   return (
     <section>
-      {/* <Helmet>
-        <title>About Page Title</title>
-        <meta
-          name="description"
-          content="Learn more about us on the about page."
-        />
-        <meta
-          property="og:image"
-          content="https://media.istockphoto.com/id/1131028789/photo/portrait-of-a-man-taking-photos-with-camera-reflex-against-the-sunset.jpg?s=612x612&w=0&k=20&c=x3o-3VilVuIXVpLhj_z9oGl5ufp5f0ymhRc9taSDsYU="
-        />
-      </Helmet> */}
       <h1>About</h1>
       <p>
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Velit nobis,

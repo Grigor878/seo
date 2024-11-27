@@ -1,20 +1,8 @@
 import React from "react";
-import { Helmet } from "react-helmet";
 
 const Home = () => {
   return (
     <section>
-      <Helmet>
-        <title>Home Page Title</title>
-        <meta
-          name="description"
-          content="Welcome to the home page. Here is some description for SEO."
-        />
-        <meta
-          property="og:image"
-          content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9SRRmhH4X5N2e4QalcoxVbzYsD44C-sQv-w&s"
-        />
-      </Helmet>
       <h1>Home</h1>
       <p>
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Obcaecati eius

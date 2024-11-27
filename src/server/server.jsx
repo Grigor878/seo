@@ -1,8 +1,100 @@
 
+// import express from "express";
+// import { StaticRouter } from "react-router-dom/server";
+// import ReactDOMServer from "react-dom/server";
+// import App from "../client/components/App";
+// import fs from "fs";
+
+// const app = express();
+// const baseUrl =
+//   process.env.NODE_ENV === "development"
+//     ? "http://localhost:3001/seo"
+//     : "https://aparto.am/seo";
+// const PORT = process.env.PORT || 3001;
+
+// app.use("/assets", express.static(`${__dirname}/../client/assets/imgs`));
+// app.use("/static", express.static(__dirname));
+
+// const getMetaTagsForRoute = (location) => {
+//   let title = "";
+//   let description = "";
+//   let image = `${baseUrl}/assets/logo.png`;
+
+//   if (location === "/seo/") {
+//     title = "Home Page Title";
+//     description = "Welcome to the home page. Here is some description for SEO.";
+//     image = `${baseUrl}/assets/logo.png`;
+//   } else if (location === "/seo/about") {
+//     title = "About Page Title";
+//     description = "Learn more about us on the about page.";
+//     image =
+//       "https://media.istockphoto.com/id/1131028789/photo/portrait-of-a-man-taking-photos-with-camera-reflex-against-the-sunset.jpg?s=612x612&w=0&k=20&c=x3o-3VilVuIXVpLhj_z9oGl5ufp5f0ymhRc9taSDsYU=";
+//   } else if (location === "/seo/contact-us") {
+//     title = "Contact Us Title";
+//     description = "Contact with us visiting contact us page.";
+//     image =
+//       "https://www.simplilearn.com/ice9/free_resources_article_thumb/what_is_image_Processing.jpg";
+//   }
+
+//   return {
+//     title,
+//     description,
+//     image,
+//   };
+// };
+
+// const createReactApp = async (req) => {
+//   const location = req.url;
+//   const url = req.protocol + "://" + req.get("host") + location;
+
+//   const { title, description, image } = getMetaTagsForRoute(location);
+
+//   const reactApp = ReactDOMServer.renderToString(
+//     <StaticRouter location={location}>
+//       <App />
+//     </StaticRouter>
+//   );
+
+//   const htmlTemplate = await fs.promises.readFile(
+//     `${__dirname}/index.html`,
+//     "utf-8"
+//   );
+
+//   const finalHtml = htmlTemplate
+//     .replace(/{{title}}/g, title)
+//     .replace(/{{description}}/g, description)
+//     .replace(/{{image}}/g, image)
+//     .replace(/{{imageAlt}}/g, title)
+//     .replace(/{{url}}/g, url)
+//     .replace("{{reactApp}}", reactApp);
+
+//   return finalHtml;
+// };
+
+// app.get("*", async (req, res) => {
+//   try {
+//     const indexHtml = await createReactApp(req);
+//     res.status(200).send(indexHtml);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("Error rendering the page.");
+//   }
+// });
+
+// app.listen(PORT, () => {
+//   console.log(`Server started on port ${PORT}`);
+// });
+
+
+
+
+
+
+
 import express from "express";
 import { StaticRouter } from "react-router-dom/server";
 import ReactDOMServer from "react-dom/server";
-import App from "../client/components/App";
+import View from "../client/view/View";
 import fs from "fs";
 
 const app = express();
@@ -15,43 +107,13 @@ const PORT = process.env.PORT || 3001;
 app.use("/assets", express.static(`${__dirname}/../client/assets/imgs`));
 app.use("/static", express.static(__dirname));
 
-const getMetaTagsForRoute = (location) => {
-  let title = "";
-  let description = "";
-  let image = `${baseUrl}/assets/logo.png`;
-
-  if (location === "/seo/") {
-    title = "Home Page Title";
-    description = "Welcome to the home page. Here is some description for SEO.";
-    image = `${baseUrl}/assets/logo.png`;
-  } else if (location === "/seo/about") {
-    title = "About Page Title";
-    description = "Learn more about us on the about page.";
-    image =
-      "https://media.istockphoto.com/id/1131028789/photo/portrait-of-a-man-taking-photos-with-camera-reflex-against-the-sunset.jpg?s=612x612&w=0&k=20&c=x3o-3VilVuIXVpLhj_z9oGl5ufp5f0ymhRc9taSDsYU=";
-  } else if (location === "/seo/contact-us") {
-    title = "Contact Us Title";
-    description = "Contact with us visiting contact us page.";
-    image =
-      "https://www.simplilearn.com/ice9/free_resources_article_thumb/what_is_image_Processing.jpg";
-  }
-
-  return {
-    title,
-    description,
-    image,
-  };
-};
-
-const createReactApp = async (req) => {
+const createReactApp = async (req, title, description, image) => {
   const location = req.url;
   const url = req.protocol + "://" + req.get("host") + location;
 
-  const { title, description, image } = getMetaTagsForRoute(location);
-
   const reactApp = ReactDOMServer.renderToString(
     <StaticRouter location={location}>
-      <App />
+      <View />
     </StaticRouter>
   );
 
@@ -71,10 +133,58 @@ const createReactApp = async (req) => {
   return finalHtml;
 };
 
+app.get("/seo/", async (req, res) => {
+  try {
+    const title = "Home Page Title";
+    const description = "Welcome to the home page. Here is some description for SEO.";
+    const image = `${baseUrl}/assets/logo.png`;
+
+    const html = await createReactApp(req, title, description, image);
+    res.status(200).send(html);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error rendering the page.");
+  }
+});
+
+app.get("/seo/about", async (req, res) => {
+  try {
+    const title = "About Page Title";
+    const description = "Learn more about us on the about page.";
+    const image =
+      "https://media.istockphoto.com/id/1131028789/photo/portrait-of-a-man-taking-photos-with-camera-reflex-against-the-sunset.jpg?s=612x612&w=0&k=20&c=x3o-3VilVuIXVpLhj_z9oGl5ufp5f0ymhRc9taSDsYU=";
+
+    const html = await createReactApp(req, title, description, image);
+    res.status(200).send(html);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error rendering the page.");
+  }
+});
+
+app.get("/seo/contact-us", async (req, res) => {
+  try {
+    const title = "Contact Us Title";
+    const description = "Contact with us visiting contact us page.";
+    const image =
+      "https://www.simplilearn.com/ice9/free_resources_article_thumb/what_is_image_Processing.jpg";
+
+    const html = await createReactApp(req, title, description, image);
+    res.status(200).send(html);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error rendering the page.");
+  }
+});
+
 app.get("*", async (req, res) => {
   try {
-    const indexHtml = await createReactApp(req);
-    res.status(200).send(indexHtml);
+    const title = "404 Not Found";
+    const description = "The page you are looking for does not exist.";
+    const image = `${baseUrl}/assets/notFound.png`;
+
+    const html = await createReactApp(req, title, description, image);
+    res.status(404).send(html);
   } catch (error) {
     console.error(error);
     res.status(500).send("Error rendering the page.");
@@ -84,13 +194,6 @@ app.get("*", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
-
-
-
-
-
-
-
 
 
 
