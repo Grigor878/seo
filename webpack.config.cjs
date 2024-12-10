@@ -63,11 +63,12 @@
 const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const babelLoader = {
   rules: [
     {
-      test: /\.(js|jsx)$/, // Fixing the typo here: `.` -> `\.` to match file extensions
+      test: /\.(js|jsx)$/,
       exclude: /node_modules/,
       use: {
         loader: "babel-loader",
@@ -82,13 +83,31 @@ const babelLoader = {
     {
       // Image rule
       test: /\.(png|jpe?g|gif|svg)$/i,
-      type: "asset/resource", // Built-in Webpack 5 asset handling
+      type: "asset/resource",
+    },
+    // {
+    //   // SCSS rule
+    //   test: /\.scss$/,
+    //   use: [
+    //     process.env.NODE_ENV === "development" ? "style-loader" : MiniCssExtractPlugin.loader,
+    //     "css-loader",   // Resolves CSS imports and URLs
+    //     "sass-loader",  // Compiles SCSS to CSS
+    //   ],
+    // },
+    {
+      test: /\.scss$/,
+      use: [
+        {
+          loader: MiniCssExtractPlugin.loader,
+        },
+        'css-loader'
+      ],
     },
   ],
 };
 
 const resolve = {
-  extensions: [".js", ".jsx"], // Resolves `.js` and `.jsx` without explicitly specifying the extension
+  extensions: [".js", ".jsx", ".scss"],
 };
 
 const serverConfig = {
@@ -101,7 +120,7 @@ const serverConfig = {
     publicPath: "/static/",
   },
   module: {
-    rules: babelLoader.rules, // Fix: ensure `module` uses `rules` directly
+    rules: babelLoader.rules,
   },
   plugins: [
     new webpack.EnvironmentPlugin({
@@ -117,16 +136,19 @@ const clientConfig = {
   entry: "./src/client/index.jsx",
   output: {
     path: path.join(__dirname, "./dist"),
-    publicPath: "/static/", // Ensure trailing slash to correctly resolve paths
+    publicPath: "/static/",
     filename: "client.js",
-    assetModuleFilename: "assets/[hash][ext][query]", // Output images to `dist/assets/`
+    assetModuleFilename: "assets/[hash][ext][query]",
   },
   module: {
-    rules: babelLoader.rules, // Fix: ensure `module` uses `rules` directly
+    rules: babelLoader.rules,
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src/client/index.html"), // Use `path.join` for consistency
+      template: path.join(__dirname, "src/client/index.html"),
+    }),
+    new MiniCssExtractPlugin({
+      filename: "styles.css", // Output CSS files
     }),
   ],
   resolve,

@@ -1,4 +1,3 @@
-
 // import express from "express";
 // import { StaticRouter } from "react-router-dom/server";
 // import ReactDOMServer from "react-dom/server";
@@ -85,17 +84,20 @@
 //   console.log(`Server started on port ${PORT}`);
 // });
 
-
-
-
-
-
-
 import express from "express";
-import { StaticRouter } from "react-router-dom/server";
 import ReactDOMServer from "react-dom/server";
+import { StaticRouter } from "react-router-dom/server";
+import { Provider } from "react-redux";
+import store from "../client/store/store";
 import View from "../client/view/View";
 import fs from "fs";
+//
+import i18next from "i18next";
+import { initReactI18next } from "react-i18next";
+import HttpApi from "i18next-http-backend";
+import LanguageDetector from "i18next-browser-languagedetector";
+import cookies from "js-cookie";
+import { languages } from "../client/services/i18next/data";
 
 const app = express();
 const baseUrl =
@@ -104,8 +106,29 @@ const baseUrl =
     : "https://aparto.am/seo";
 const PORT = process.env.PORT || 3001;
 
+app.use("/locales", express.static(`${__dirname}/../client/locales`));
 app.use("/assets", express.static(`${__dirname}/../client/assets/imgs`));
 app.use("/static", express.static(__dirname));
+
+//
+i18next
+  .use(HttpApi)
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    lng: cookies.get("i18next") || "am",
+    supportedLngs: languages,
+    debug: false,
+    detection: {
+      order: ["cookie", "path", "htmlTag"],
+      caches: ["cookie"],
+    },
+    backend: {
+      loadPath: "/locales/{{lng}}/translation.json",
+    },
+    react: { useSuspense: false },
+  });
+//
 
 const createReactApp = async (req, title, description, image) => {
   const location = req.url;
@@ -113,7 +136,9 @@ const createReactApp = async (req, title, description, image) => {
 
   const reactApp = ReactDOMServer.renderToString(
     <StaticRouter location={location}>
-      <View />
+      <Provider store={store}>
+        <View />
+      </Provider>
     </StaticRouter>
   );
 
@@ -128,15 +153,19 @@ const createReactApp = async (req, title, description, image) => {
     .replace(/{{image}}/g, image)
     .replace(/{{imageAlt}}/g, title)
     .replace(/{{url}}/g, url)
-    .replace("{{reactApp}}", reactApp);
-
+    .replace("{{reactApp}}", reactApp)
+    .replace(
+      "{{styles}}",
+      "<link rel='stylesheet' type='text/css' href='./styles.css' />"
+    );
   return finalHtml;
 };
 
 app.get("/seo/", async (req, res) => {
   try {
     const title = "Home Page Title";
-    const description = "Welcome to the home page. Here is some description for SEO.";
+    const description =
+      "Welcome to the home page. Here is some description for SEO.";
     const image = `${baseUrl}/assets/logo.png`;
 
     const html = await createReactApp(req, title, description, image);
@@ -195,12 +224,6 @@ app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
 
-
-
-
-
-
-
 // import express from "express";
 // import { StaticRouter } from "react-router-dom/server";
 // import ReactDOMServer from "react-dom/server";
@@ -223,7 +246,6 @@ app.listen(PORT, () => {
 //   let description = "";
 //   let image = `${baseUrl}/assets/logo.png`;
 //   // let seoData = null
-
 
 //   if (location === "/seo") {
 //     title = "Home Page Title";
@@ -305,7 +327,6 @@ app.listen(PORT, () => {
 // app.listen(PORT, () => {
 //   console.log(`Server started on port ${PORT}`);
 // });
-
 
 ///-----------------------------------------------------------------///
 

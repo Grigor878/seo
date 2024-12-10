@@ -1,0 +1,62 @@
+@use "../../../../variables" as *;
+
+.size {
+  @include flexCol;
+  position: relative;
+
+  &__choose {
+    @include flexCenter;
+    padding: 4px 12px;
+    background: $bgSub;
+    border: 1px solid $border;
+    border-radius: 5px;
+    cursor: pointer;
+
+    @media screen and (max-width: 768px) {
+      width: 100px;
+    }
+  }
+
+  &__unit {
+    font-family: "Archivo";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    color: $text;
+    cursor: pointer;
+
+    sup {
+      font-size: 8px;
+    }
+  }
+
+  &__dropdown {
+    display: none;
+  }
+
+  &__dropdown-active {
+    position: absolute;
+    top: 32px;
+    @include flexCol;
+    background: $bgSub;
+    border: 1px solid #d7daf7;
+    border-radius: 5px;
+
+    li {
+      cursor: pointer;
+      padding: 4px 12px;
+    }
+
+    @media screen and (max-width: 768px) {
+      align-items: center;
+      width: 100%;
+      z-index: 1;
+
+      li {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+      }
+    }
+  }
+}
